@@ -12,7 +12,7 @@ from borrowings.serializers import (
     BorrowingDetailSerializer,
 )
 
-from telegram_api import telegram_sender
+from borrowings.telegram_api import telegram_sender
 
 
 class BorrowingViewSet(

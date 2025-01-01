@@ -21,7 +21,8 @@ class BorrowingSerializer(serializers.ModelSerializer):
 
 
 class BorrowingDetailSerializer(serializers.ModelSerializer):
-    book = BorrowingSerializer(many=False, read_only=True)
+    book_id = serializers.StringRelatedField()
+    user_id = serializers.StringRelatedField()
 
     class Meta:
         model = Borrowing
@@ -30,8 +31,8 @@ class BorrowingDetailSerializer(serializers.ModelSerializer):
             "borrow_date",
             "expected_return_date",
             "actual_return_date",
-            "book",
-            "user"
+            "book_id",
+            "user_id"
         )
         read_only_fields = fields
 
@@ -48,8 +49,9 @@ class BorrowingDetailSerializer(serializers.ModelSerializer):
         instance.actual_return_date = datetime.now().date()
         instance.save()
 
-        book = instance.book
+        book = instance.book_id
         book.inventory += 1
+        book.save()
 
         return instance
 
@@ -61,19 +63,19 @@ class BorrowingCreateSerializer(serializers.ModelSerializer):
             "id",
             "borrow_date",
             "expected_return_date",
-            "book"
+            "book_id"
         )
 
     def validate(self, attrs):
         data = super(BorrowingCreateSerializer, self).validate(attrs=attrs)
-        Borrowing.validate_inventory(attrs["book"], ValidationError)
+        Borrowing.validate_inventory(attrs["book_id"], ValidationError)
         return data
 
     @transaction.atomic
     def create(self, validated_data):
         borrowing = Borrowing.objects.create(**validated_data)
 
-        book = validated_data.get("book")
+        book = validated_data.get("book_id")
         book.inventory -= 1
         book.save()
         return borrowing
