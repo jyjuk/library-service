@@ -33,7 +33,13 @@ class BorrowingDetailSerializer(serializers.ModelSerializer):
             "book_id",
             "user_id"
         )
-        read_only_fields = ("id", "borrow_date", "expected_return_date", "book_id", "user_id")
+        read_only_fields = (
+            "id",
+            "borrow_date",
+            "expected_return_date",
+            "book_id",
+            "user_id"
+        )
 
     def validate(self, attrs):
         data = super(BorrowingDetailSerializer, self).validate(attrs=attrs)
@@ -45,7 +51,10 @@ class BorrowingDetailSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def update(self, instance, validated_data):
-        instance.actual_return_date = validated_data.get('actual_return_date', instance.actual_return_date)
+        instance.actual_return_date = validated_data.get(
+            "actual_return_date",
+            instance.actual_return_date
+        )
 
         instance.save()
 
