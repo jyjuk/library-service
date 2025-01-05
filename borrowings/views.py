@@ -83,7 +83,11 @@ class BorrowingViewSet(
 
         borrowing = self.get_object()
 
-        serializer = self.get_serializer(borrowing, data=request.data, partial=True)
+        serializer = self.get_serializer(
+            borrowing,
+            data=request.data,
+            partial=True
+        )
         serializer.is_valid(raise_exception=True)
 
         borrowing.actual_return_date = datetime.now().date()
