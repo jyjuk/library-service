@@ -1,3 +1,27 @@
-.idea
-venv
-**__pycache__
+# Environment variables
+.env
+
+# Database
+*.sqlite3
+
+# Python cache
+*.pyc
+__pycache__/
+
+# IDE settings
+.vscode/
+.idea/
+
+# Deployment
+/staticfiles/
+/media/
+
+# Logs
+*.log
+
+# Virtual environment
+venv/
+
+# Testing
+.coverage
+htmlcov/
