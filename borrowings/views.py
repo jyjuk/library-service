@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import mixins, viewsets, status
@@ -21,7 +23,7 @@ class BorrowingViewSet(
     mixins.ListModelMixin,
     viewsets.GenericViewSet
 ):
-    queryset = Borrowing.objects.select_related("book")
+    queryset = Borrowing.objects.select_related("book_id")
     permission_classes = (IsAuthenticated,)
 
     def get_serializer_class(self):
@@ -41,7 +43,7 @@ class BorrowingViewSet(
         if is_active:
             queryset = queryset.filter(actual_return_date__isnull=True)
         if not current_user.is_staff:
-            queryset = queryset.filter(user=current_user)
+            queryset = queryset.filter(user_id=current_user)
         else:
             user_id = self.request.query_params.get("user_id")
             if user_id:
@@ -51,12 +53,12 @@ class BorrowingViewSet(
     @staticmethod
     def notify_borrowing(borrowing):
         message = (
-            f"New Borrowing Created "
-            f"Borrowing ID: {borrowing.pk}"
-            f"Borrowing Date: {borrowing.borrow_date}"
-            f"Expected Return Date: {borrowing.expected_return_date}"
-            f"Book Title: {borrowing.book.title}"
-            f"Book Author: {borrowing.book.author}"
+            f"New Borrowing Created \n"
+            f"Borrowing ID: {borrowing.pk}\n"
+            f"Borrowing Date: {borrowing.borrow_date}\n"
+            f"Expected Return Date: {borrowing.expected_return_date}\n"
+            f"Book Title: {borrowing.book_id.title}\n"
+            f"Book Author: {borrowing.book_id.author}\n"
         )
         telegram_sender.send_message(message)
 
@@ -72,16 +74,23 @@ class BorrowingViewSet(
     )
     def return_borrowing(self, request, pk=None):
         """
-        Endpoint for making a borrowing as returned
-        by providing the actual return date
-        :param request:
-        :param pk:
-        :return:
-        """
+            Endpoint for making a borrowing as returned
+            by providing the actual return date
+            :param request:
+            :param pk:
+            :return:
+            """
+
         borrowing = self.get_object()
-        serializer = self.get_serializer(borrowing, data=request.data)
+
+        serializer = self.get_serializer(borrowing, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+
+        borrowing.actual_return_date = datetime.now().date()
+
+        borrowing.save()
+        borrowing.refresh_from_db()
+
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @extend_schema(
