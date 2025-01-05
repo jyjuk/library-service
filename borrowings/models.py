@@ -53,7 +53,8 @@ class Borrowing(models.Model):
             )
 
     def clean(self):
-        Borrowing.validate_inventory(self.book_id, ValidationError)
+        if self.pk is None:
+            Borrowing.validate_inventory(self.book_id, ValidationError)
 
     def save(
             self,
@@ -62,11 +63,10 @@ class Borrowing(models.Model):
             using=None,
             update_fields=None
     ):
-        if self.pk is None:
-            self.full_clean()
-            return super(Borrowing, self).save(
-                force_insert, force_update, using, update_fields
-            )
+        self.full_clean()
+        return super(Borrowing, self).save(
+            force_insert, force_update, using, update_fields
+        )
 
     def __str__(self):
         return f"{self.book_id} borrowed by {self.user_id}"
