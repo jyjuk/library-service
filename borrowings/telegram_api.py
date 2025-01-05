@@ -11,15 +11,18 @@ class TelegramSender:
         chat_id = os.getenv("TELEGRAM_CHAT_ID")
 
         if token is None or chat_id is None:
-            raise ValueError("TELEGRAM_BOT__TOKEN or TELEGRAM_CHAT_ID is not set in the environment variables")
+            raise ValueError(
+                "TELEGRAM_BOT__TOKEN or "
+                "TELEGRAM_CHAT_ID is not set in the environment variables"
+            )
 
         self.bot = telebot.TeleBot(token)
-        self.chet_id = chat_id
+        self.chat_id = chat_id
 
     def send_message(self, text):
         try:
             self.bot.send_message(
-                chat_id=self.chet_id, text=text, parse_mode="markdown"
+                chat_id=self.chat_id, text=text, parse_mode="markdown"
             )
         except telebot.apihelper.ApiException as e:
             print(f"Error sending message to Telegram: {e}")
