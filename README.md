@@ -1,8 +1,9 @@
 # Library Service API
 
-Welcome to the online management system for book borrowings.
-
-
+This project aims to modernize the library’s outdated system for tracking books, borrowings, users, and payments. 
+Currently, there is no way to monitor who has returned their books on time. 
+This system will streamline the work of library administrators and 
+enhance the user experience by providing a browsable API interface for all functionalities.
 ## Features
 
 ### Books Service
@@ -26,7 +27,8 @@ Welcome to the online management system for book borrowings.
 
 ### ModHeader Integration
 
-- **Chrome Extension Compatibility**: Custom Authorization header for JWT authentication to enhance user experience with the ModHeader Chrome extension.
+- **Chrome Extension Compatibility**: Custom Authorization header for JWT authentication to enhance 
+- user experience with the ModHeader Chrome extension.
 
 ## API Documentation
 
