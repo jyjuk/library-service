@@ -35,7 +35,65 @@ Welcome to the online management system for book borrowings.
 - **Redoc UI**: Clean and readable API documentation at `/api/doc/redoc/`.
 - **Schema Endpoint**: API schema available at `/api/schema/`.
 
-## Test Coverage Report
+### Prerequisites
+
+- Ensure Docker is installed on your machine. You can download it from the official Docker website.
+
+### Building the Docker Image
+
+1. Create a `Dockerfile` in the root directory of your project with the following content:
+
+    ```Dockerfile
+    # Use an official Python runtime as a parent image
+    FROM python:3.9-alpine
+
+    # Set the maintainer label
+    LABEL maintainer="jyjuk1@gmail.com"
+
+    # Set environment variable
+    ENV PYTHONUNBUFFERED=1
+
+    # Set the working directory in the container
+    WORKDIR /app
+
+    # Copy the requirements file into the container
+    COPY requirements.txt /app/requirements.txt
+
+    # Install the dependencies
+    RUN pip install --no-cache-dir -r /app/requirements.txt
+
+    # Copy the project files into the container
+    COPY . /app
+
+    # Run migrations and start the server
+    CMD ["sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
+    ```
+
+2. Create a `.dockerignore` file to specify which files and directories to ignore when building the Docker image:
+
+    ```plaintext
+    __pycache__
+    *.pyc
+    .git
+    .vscode
+    ```
+
+3. Build the Docker image:
+
+    ```sh
+    docker build -t libraryservice .
+    ```
+
+### Running the Docker Container
+
+1. Run the Docker container:
+
+    ```sh
+    docker run -p 8000:8000 libraryservice
+    ```
+
+2. Access the application at `http://localhost:8000/api/books/`.
+
 ## Test Coverage Report
 
 | File                                | Statements | Missing | Excluded | Coverage |
