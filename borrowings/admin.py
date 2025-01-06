@@ -5,7 +5,13 @@ from borrowings.models import Borrowing
 
 @admin.register(Borrowing)
 class BorrowingAdmin(admin.ModelAdmin):
-    list_display = ("id", "borrow_date", "actual_return_date", "get_book_title", "get_user_username")
+    list_display = (
+        "id",
+        "borrow_date",
+        "actual_return_date",
+        "get_book_title",
+        "get_user_username"
+    )
 
     def get_book_title(self, obj):
         return obj.book_id.title
